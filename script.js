@@ -210,7 +210,7 @@ function lose(){
 }
 function lose(){
   gameOver.play()
-  txtScore.textContent = ${score};
+  txtScore.textContent = `${score}`;
   loseCard.style.display='block'; 
   
 }
