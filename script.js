@@ -1,25 +1,42 @@
-// Constantes
+<!--Definicion de variables/constantes--!>
+document.addEventListener('keydown', keyPressed);
+const loseCard=document.querySelector('.card');
+const txtScore=document.querySelector('.txtScore');
+const restartButton=document.querySelector('.restar');
 const cell = 40;
 const rows = 14;
 const cols = 14;
-const canvas = document.getElementById('snakeGame');
-const scoreDisplay = document.getElementById('snakeGameScore');
-const highestScoreDisplay = document.getElementById('snakeGameHighestScore');
-const comer = new Audio("comer.mp3");
-const gameOver = new Audio("over.mp3");
+let vlc=140;
+let chanceV1=1;
+let chanceV2=2;
+let canvas = document.getElementById('snakeGame');
+let scoreDisplay = document.getElementById('snakeGameScore');
+let highestScoreDisplay = document.getElementById('snakeGameHighestScore');
+let score = 0;
+let highestScore = 0;
+let start = true;
 
-// Variables
-let vlc = 140;
-let chanceV1 = 1;
-let chanceV2 = 2;
+  <!--Dimensiones del canvas--!>
+canvas.height = rows * cell;
+canvas.width = cols * cell;
+let c = canvas.getContext('2d');
+
+<!--Audios--!>
+const comer=new Audio("comer.mp3");
+const gameOver=new Audio("over.mp3");
+const click=new Audio("click.mp3");
+gameOver.playbackRate = 5;
+
 let dir = {
   x: 0,
   y: 0
 };
+<!--Posicion inicial de la serpiente--!>
 let snakeInitial = {
   x: rows * cell / 2,
   y: cols * cell / 2
 };
+<!--Largo inicial--!>
 let tail = [];
 for (let i = 0; i < 3; i++) {
   tail.push({
@@ -27,18 +44,13 @@ for (let i = 0; i < 3; i++) {
     y: snakeInitial.y
   });
 }
+<!--Crear la comida--!>
 let food = {
   x: snakeInitial.x + 2 * cell,
   y: snakeInitial.y
 };
-let score = 0;
-let highestScore = 0;
-let start = true;
 
-// Event Listener para la tecla presionada
-document.addEventListener('keydown', keyPressed);
 
-// Función principal para jugar
 function play() {
   setTimeout(() => {
     if (tail[0].x < 0 || tail[0].x === canvas.width || tail[0].y < 0 || tail[0].y === canvas.height) {
@@ -63,14 +75,14 @@ function play() {
         };
       }
     }
-    
-    if (check(tail[0].x, tail[0].y)) {
-      for (let i = 0; i < score; i++) {
-        tail.pop();
+    <!--Verificar coliciones--!>
+      if (check(tail[0].x, tail[0].y)) {
+        for (let i = 0; i < score; i++) {
+          tail.pop();
+        }
+        score = 0;  
       }
-      score = 0;
-    }
-    
+    <!--Incremento al comer--!>
     if (tail[0].x === food.x && tail[0].y === food.y) {
       score++;
       comer.play();
@@ -86,42 +98,43 @@ function play() {
         };
       }
     }
-    
-    if (!(dir.x === 0 && dir.y === 0)) {
+    if (!(dir.x === 0 && dir.y === 0))
       for (let t = tail.length - 1; t > 0; t--) {
         tail[t].x = tail[t - 1].x;
         tail[t].y = tail[t - 1].y;
         start = false;
+        
       }
-    }
-    
+      
+      
     tail[0].x += dir.x;
     tail[0].y += dir.y;
-    
+    <!--Crea las dimensiones del canvas en cuadrados--!>
+  
     c.clearRect(0, 0, canvas.width, canvas.height);
-    
+      
     c.fillStyle = 'rgb(30,30,30)';
     c.fillRect(0, 0, canvas.width, canvas.height);
     
     c.fillStyle = 'rgb(250, 29, 29 )';
     c.fillRect(food.x + 1, food.y + 1, cell - 2, cell - 2);
-    
+      
+    <!--Crear cada uno de los cuadros de la serpiente--!>
     for (let t in tail) {
       c.fillStyle = '#f5f5f5';
       c.fillRect(tail[t].x + 1, tail[t].y + 1, cell - 2, cell - 2);
     }
-    
-    scoreDisplay.innerHTML = `Score: ${score}`;
-    
+  
+    <!--Ingremento de highestcore--!>
+    scoreDisplay.innerHTML = Score: ${score};
     if (highestScore < score)
       highestScore = score;
-    highestScoreDisplay.innerHTML = `Highest score: ${highestScore}`;
-    
+    highestScoreDisplay.innerHTML = Highest score: ${highestScore};  
     requestAnimationFrame(play);
   }, vlc);
 }
+requestAnimationFrame(play);
 
-// Función para verificar si la comida está en la cola
 function inTail(food) {
   for (let t in tail) {
     if (food.x === tail[t].x && food.y === tail[t].y) {
@@ -130,45 +143,43 @@ function inTail(food) {
   }
   return false;
 }
-
-// Función para verificar colisiones
+<!--Verificar las coliciones--!>
 function check(x, y) {
   for (let i = 2; i < tail.length; i++) {
     if (x === tail[i].x && y === tail[i].y) {
       return true;
     }
   }
-  
-  if (chanceV1 == 1) {
-    if (score == 10) {
-      vlc = vlc - 20;
-      chanceV1 = 2;
-      chanceV2 = 1;
+  <!--Incremento de volicidad dependiendo el puntaje--!>
+  if(chanceV1==1){
+    if(score==10){
+      vlc=vlc-20;
+      chanceV1=2;
+      chanceV2=1
     }
   }
-  
-  if (chanceV2 == 1) {
-    if (score == 20) {
-      vlc = vlc - 20;
-      chanceV2 = 2;
+  if(chanceV2==1){
+    if(score==20){
+      vlc=vlc-20;
+      chanceV2=2
     }
   }
-  
   return false;
 }
 
-// Función para manejar las teclas presionadas
+<!--Funcion inicio y direccion--!>
 function keyPressed(e) {
   switch (e.keyCode) {
-    case 37: // Izquierda
+      <!--Izquierda--!>
+    case 37:
       if (!start && dir.x !== cell)
         dir = {
           x: -cell,
           y: 0
         };
       break;
-      
-    case 38: // Arriba
+      <!--Arriba--!>
+    case 38:
       e.preventDefault();
       if (dir.y !== cell)
         dir = {
@@ -176,16 +187,16 @@ function keyPressed(e) {
           y: -cell
         };
       break;
-      
-    case 39: // Derecha
+      <!--Derecha--!>
+    case 39:
       if (dir.x !== -cell)
         dir = {
           x: cell,
           y: 0
         };
       break;
-      
-    case 40: // Abajo
+      <!--Abajo--!>
+    case 40:
       e.preventDefault();
       if (dir.y !== -cell)
         dir = {
@@ -196,22 +207,12 @@ function keyPressed(e) {
   }
 }
 
-// Función para mostrar la pantalla de derrota
-function lose() {
-  gameOver.play();
-  txtScore.textContent = `${score}`;
-  loseCard.style.display = 'block'; 
+restartButton.addEventListener("click",function(){
+  click.play();
+  loseCard.style.display='none';});
+function lose(){
+  gameOver.play()
+  txtScore.textContent = ${score};
+  loseCard.style.display='block'; 
+  
 }
-
-// Configuración inicial del canvas
-canvas.height = rows * cell;
-canvas.width = cols * cell;
-let c = canvas.getContext('2d');
-
-// Evento click para reiniciar el juego
-restartButton.addEventListener("click", function() {
-  loseCard.style.display = 'none';
-});
-
-// Inicio del juego
-requestAnimationFrame(play);
