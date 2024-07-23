@@ -31,6 +31,7 @@ let snakeInitial = {
   x: rows * cell / 2,
   y: cols * cell / 2
 };
+
 <!--Largo inicial--!>
 let tail = [];
 for (let i = 0; i < 3; i++) {
