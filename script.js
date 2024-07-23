@@ -1,3 +1,4 @@
+// Constantes
 const cell = 40;
 const rows = 14;
 const cols = 14;
@@ -7,7 +8,7 @@ const highestScoreDisplay = document.getElementById('snakeGameHighestScore');
 const comer = new Audio("comer.mp3");
 const gameOver = new Audio("over.mp3");
 
-
+// Variables
 let vlc = 140;
 let chanceV1 = 1;
 let chanceV2 = 2;
@@ -20,6 +21,12 @@ let snakeInitial = {
   y: cols * cell / 2
 };
 let tail = [];
+for (let i = 0; i < 3; i++) {
+  tail.push({
+    x: snakeInitial.x - i * cell,
+    y: snakeInitial.y
+  });
+}
 let food = {
   x: snakeInitial.x + 2 * cell,
   y: snakeInitial.y
@@ -28,7 +35,10 @@ let score = 0;
 let highestScore = 0;
 let start = true;
 
+// Event Listener para la tecla presionada
+document.addEventListener('keydown', keyPressed);
 
+// Función principal para jugar
 function play() {
   setTimeout(() => {
     if (tail[0].x < 0 || tail[0].x === canvas.width || tail[0].y < 0 || tail[0].y === canvas.height) {
@@ -111,6 +121,7 @@ function play() {
   }, vlc);
 }
 
+// Función para verificar si la comida está en la cola
 function inTail(food) {
   for (let t in tail) {
     if (food.x === tail[t].x && food.y === tail[t].y) {
@@ -120,6 +131,7 @@ function inTail(food) {
   return false;
 }
 
+// Función para verificar colisiones
 function check(x, y) {
   for (let i = 2; i < tail.length; i++) {
     if (x === tail[i].x && y === tail[i].y) {
@@ -145,6 +157,7 @@ function check(x, y) {
   return false;
 }
 
+// Función para manejar las teclas presionadas
 function keyPressed(e) {
   switch (e.keyCode) {
     case 37: // Izquierda
@@ -183,8 +196,22 @@ function keyPressed(e) {
   }
 }
 
+// Función para mostrar la pantalla de derrota
 function lose() {
   gameOver.play();
   txtScore.textContent = `${score}`;
   loseCard.style.display = 'block'; 
 }
+
+// Configuración inicial del canvas
+canvas.height = rows * cell;
+canvas.width = cols * cell;
+let c = canvas.getContext('2d');
+
+// Evento click para reiniciar el juego
+restartButton.addEventListener("click", function() {
+  loseCard.style.display = 'none';
+});
+
+// Inicio del juego
+requestAnimationFrame(play);
