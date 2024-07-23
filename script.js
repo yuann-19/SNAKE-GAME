@@ -122,10 +122,10 @@ function play() {
       c.fillRect(tail[t].x + 1, tail[t].y + 1, cell - 2, cell - 2);
     }
     <!--Ingremento de highestcore--!>
-    scoreDisplay.innerHTML = Score: ${score};
+    scoreDisplay.innerHTML = `Score: ${score}`;
     if (highestScore < score)
       highestScore = score;
-    highestScoreDisplay.innerHTML = Highest score: ${highestScore};  
+    highestScoreDisplay.innerHTML = `Highest score: ${highestScore}`;  
     requestAnimationFrame(play);
   }, vlc);
 }
@@ -200,6 +200,12 @@ function keyPressed(e) {
         };
       break;
   }
+}
+function lose(){
+  gameOver.play()
+  txtScore.textContent = `${score}`;
+  loseCard.style.display='block'; 
+  
 }
 function lose(){
   gameOver.play()
