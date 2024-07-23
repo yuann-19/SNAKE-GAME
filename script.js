@@ -3,28 +3,23 @@ document.addEventListener('keydown', keyPressed);
 const loseCard=document.querySelector('.card');
 const txtScore=document.querySelector('.txtScore');
 const restartButton=document.querySelector('.restar');
-const cell = 40;
-const rows = 14;
-const cols = 14;
+restartButton.addEventListener("click",function(){
+  loseCard.style.display='none';});
 let vlc=140;
 let chanceV1=1;
 let chanceV2=2;
 let canvas = document.getElementById('snakeGame');
 let scoreDisplay = document.getElementById('snakeGameScore');
 let highestScoreDisplay = document.getElementById('snakeGameHighestScore');
-let score = 0;
-let highestScore = 0;
-let start = true;
-
+let c = canvas.getContext('2d');
+const cell = 40;
+const rows = 14;
+const cols = 14;
   <!--Dimensiones del canvas--!>
 canvas.height = rows * cell;
 canvas.width = cols * cell;
-let c = canvas.getContext('2d');
-
-<!--Audios--!>
 const comer=new Audio("comer.mp3");
 const gameOver=new Audio("over.mp3");
-const click=new Audio("click.mp3");
 gameOver.playbackRate = 5;
 
 let dir = {
@@ -49,7 +44,9 @@ let food = {
   x: snakeInitial.x + 2 * cell,
   y: snakeInitial.y
 };
-
+let score = 0;
+let highestScore = 0;
+let start = true;
 
 function play() {
   setTimeout(() => {
@@ -124,7 +121,6 @@ function play() {
       c.fillStyle = '#f5f5f5';
       c.fillRect(tail[t].x + 1, tail[t].y + 1, cell - 2, cell - 2);
     }
-  
     <!--Ingremento de highestcore--!>
     scoreDisplay.innerHTML = Score: ${score};
     if (highestScore < score)
@@ -166,7 +162,6 @@ function check(x, y) {
   }
   return false;
 }
-
 <!--Funcion inicio y direccion--!>
 function keyPressed(e) {
   switch (e.keyCode) {
@@ -206,10 +201,6 @@ function keyPressed(e) {
       break;
   }
 }
-
-restartButton.addEventListener("click",function(){
-  click.play();
-  loseCard.style.display='none';});
 function lose(){
   gameOver.play()
   txtScore.textContent = ${score};
